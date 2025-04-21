@@ -2,6 +2,7 @@ package top.fusuccess.aidemo.demos.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,12 +24,19 @@ public class AIController {
 
     /**
      * 处理AI请求
-     * @param prompt 提示词
-     * @return AI响应
+     * @param requestBody
+     * @return
      */
     @RequestMapping("/ai")
     @ResponseBody
-    public String hello(@RequestParam(name = "prompt", defaultValue = "你好，你是谁") String prompt) {
+    public String hello(@RequestBody Map<String, String> requestBody) {
+        String prompt = requestBody.get("prompt");
+        if (prompt == null || prompt.isEmpty()) {
+            return "请提供提示词";
+        }
+
+        System.out.println("AI prompt: " + prompt);
+
         String response = callAiAPI(prompt);
         System.out.println("AI Response: " + response);
         return response;

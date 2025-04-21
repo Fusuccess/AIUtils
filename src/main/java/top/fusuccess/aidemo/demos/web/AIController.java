@@ -1,5 +1,7 @@
 package top.fusuccess.aidemo.demos.web;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,17 +32,22 @@ public class AIController {
      */
     @RequestMapping("/ai")
     @ResponseBody
-    public String hello(@RequestBody Map<String, String> requestBody) {
-        String prompt = requestBody.get("prompt");
-        if (prompt == null || prompt.isEmpty()) {
-            return "请提供提示词";
+    public Map<String, Object>  hello(@RequestBody Map<String, String> requestBody) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            String prompt = requestBody.get("prompt");
+            String response = callAiAPI(prompt);
+
+            // 假设解析返回的 JSON 格式
+            result.put("status", "success");
+            result.put("message", "成功");
+            result.put("data", response);
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", "请求失败，请重试！");
+            result.put("data", e.getMessage());
         }
-
-        System.out.println("AI prompt: " + prompt);
-
-        String response = callAiAPI(prompt);
-        System.out.println("AI Response: " + response);
-        return response;
+        return result;
     }
 
 
@@ -78,7 +86,14 @@ public class AIController {
 
             // 发送请求
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
+            String responseBody = response.body();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonResponse = objectMapper.readTree(responseBody);  // 解析 JSON 字符串
+            return jsonResponse.get("choices")
+                    .get(0)
+                    .get("message")
+                    .get("content")
+                    .asText();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;

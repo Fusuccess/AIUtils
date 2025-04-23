@@ -1,0 +1,13 @@
+port: 8080
+logging:
+  level:
+    root: INFO
+  file:
+    name: logs/application.log
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 0
+    timeout: 2000

@@ -49,8 +49,13 @@ public class AIController {
                 result.put("data", cachedResponse);
                 return result;
             }
+            
             String response = callAiAPI(prompt);
+            if (response == null) {
+                redisTemplate.opsForValue().set(prompt, "EMPTY", 60, TimeUnit.SECONDS); // 空值缓存
+            } else {
             redisTemplate.opsForValue().set(prompt, response, 30, TimeUnit.MINUTES);  // 缓存30分钟
+            }
             // 假设解析返回的 JSON 格式
             result.put("status", "success");
             result.put("message", "成功");

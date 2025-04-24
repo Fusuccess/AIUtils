@@ -11,3 +11,6 @@ spring:
     password: 123456
     database: 0
     timeout: 2000
+    cache:
+      redis:
+        max-memory-policy: allkeys-lru

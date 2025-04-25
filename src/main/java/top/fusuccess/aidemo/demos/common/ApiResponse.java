@@ -1,4 +1,4 @@
-package top.fusuccess.aidemo.demos.utils;
+package top.fusuccess.aidemo.demos.common;
 
 public class ApiResponse {
     private String status;

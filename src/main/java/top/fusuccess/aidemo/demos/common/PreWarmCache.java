@@ -1,4 +1,4 @@
-package top.fusuccess.aidemo.demos.warmCache;
+package top.fusuccess.aidemo.demos.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -15,6 +15,8 @@
     <description>AIDemo</description>
     <properties>
         <redis.version>1.5.7.RELEASE</redis.version>
+        <mysql.version>8.0.16</mysql.version>
+        <mybatisplus.version>3.4.2</mybatisplus.version>
     </properties>
     <dependencies>
 
@@ -30,6 +32,21 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <version>${redis.version}</version>
         </dependency>
+
+        <!--mysql驱动依赖-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+
+        <!--MybatisPlus依赖-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatisplus.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -19,8 +19,14 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 处理跨域预检请求
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            return true;
+            response.setStatus(HttpServletResponse.SC_OK);  // 返回 200 状态码
+            response.setHeader("Access-Control-Allow-Origin", "*"); // 允许所有来源的跨域请求
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // 允许的方法
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type"); // 允许的请求头
+            response.setHeader("Access-Control-Max-Age", "3600"); // 缓存预检请求的时间
+            return false;  // 返回 false 以防止进一步处理该请求
         }
         // 获取请求头中的Authorization字段
         String token = request.getHeader("Authorization");

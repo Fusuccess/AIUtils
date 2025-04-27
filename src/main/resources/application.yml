@@ -19,3 +19,6 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+jwt:
+  secret: /yX7Di2OZm6Zb/l8KdOnV3gs1XlSu/DXgzis0IY3QPwOA5Ow6mvYmqCOrIiGMkMjMsY3S7v6HE9pNbmC8e+okw==
+  expiration: 3600000

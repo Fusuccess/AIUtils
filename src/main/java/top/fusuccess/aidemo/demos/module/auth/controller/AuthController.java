@@ -1,7 +1,7 @@
 package top.fusuccess.aidemo.demos.module.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +14,7 @@ import top.fusuccess.aidemo.demos.module.auth.service.UserService;
 import top.fusuccess.aidemo.demos.utils.JwtUtils;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,6 +29,8 @@ public class AuthController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String username = loginRequest.get("username");
@@ -38,6 +41,7 @@ public class AuthController {
         // 简单验证（实际应用应该查询数据库）
         if (userEntity != null && passwordEncoder.matches(password, userEntity.getPassword())) {
             String token = jwtUtils.generateToken(username);
+            redisTemplate.opsForValue().set("token_"+username, token, 30, TimeUnit.MINUTES);
             return ResponseEntity.ok().body(new ApiResponse("success", token));
         } else {
             return ResponseEntity.ok().body(new ApiResponse("error", "用户名或密码错误"));

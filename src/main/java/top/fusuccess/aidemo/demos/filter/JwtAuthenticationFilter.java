@@ -3,6 +3,7 @@ package top.fusuccess.aidemo.demos.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -17,12 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -51,6 +56,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 4. 解析Token
         try {
             Claims claims = jwtUtils.parseToken(token.substring(7)); // 移除Bearer前缀
+            String substringToken = token.substring(7);
+            String username = claims.getSubject();
+            String redisToken = redisTemplate.opsForValue().get("token_"+username);
+            if (redisToken == null || !redisToken.equals(substringToken)) {
+                sendErrorResponse(response, new ApiResponse("error", "连接超时，请重新登陆"));
+                return;
+            }else{
+                // 刷新token有效期
+                redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
+            }
 
             // 5. 创建Authentication对象并存入SecurityContext
             UsernamePasswordAuthenticationToken authentication =

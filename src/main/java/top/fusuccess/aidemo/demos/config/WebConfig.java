@@ -22,11 +22,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")  // 允许所有请求头
                 .allowCredentials(true);
     }
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 配置拦截器，拦截所有的请求，除了登录接口外
-        registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/**") // 所有路径都拦截
-                .excludePathPatterns("/auth/login"); // 登录接口不拦截
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        // 配置拦截器，拦截所有的请求，除了登录接口外
+//        registry.addInterceptor(jwtInterceptor)
+//                .addPathPatterns("/**") // 所有路径都拦截
+//                .excludePathPatterns("/auth/login","/auth/register"); // 登录和注册接口不拦截
+//    }
 }

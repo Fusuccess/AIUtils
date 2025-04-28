@@ -5,4 +5,5 @@ import top.fusuccess.aidemo.demos.module.auth.entity.UserEntity;
 
 public interface UserService extends IService<UserEntity> {
     UserEntity findByUserId(Long userId);
+    UserEntity findByUserName(String userName);
 }

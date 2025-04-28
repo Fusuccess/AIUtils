@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.fusuccess.aidemo.demos.common.ApiResponse;
+import top.fusuccess.aidemo.demos.module.auth.entity.UserEntity;
+import top.fusuccess.aidemo.demos.module.auth.service.UserService;
 import top.fusuccess.aidemo.demos.utils.JwtUtils;
 
 import java.util.Map;
@@ -19,13 +21,20 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
+        UserEntity userEntity = userService.findByUserName(username);
+        if (userEntity == null) {
+            return ResponseEntity.ok().body(new ApiResponse("error", "用户不存在"));
+        }
         // 简单验证（实际应用应该查询数据库）
-        if ("admin".equals(username) && "123456".equals(password)) {
+        if (userEntity.getPassword().equals(password)) {
             String token = jwtUtils.generateToken(username);
             return ResponseEntity.ok().body(new ApiResponse("success", token));
         } else {

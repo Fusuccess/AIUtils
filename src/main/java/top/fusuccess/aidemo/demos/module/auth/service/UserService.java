@@ -6,4 +6,6 @@ import top.fusuccess.aidemo.demos.module.auth.entity.UserEntity;
 public interface UserService extends IService<UserEntity> {
     UserEntity findByUserId(Long userId);
     UserEntity findByUserName(String userName);
+    boolean existsByUsername(String username);
+    void saveUser(String username, String encodedPassword);
 }

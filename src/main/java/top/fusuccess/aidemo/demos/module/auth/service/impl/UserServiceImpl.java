@@ -23,4 +23,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             return null;
         return baseMapper.selectOne(new QueryWrapper<UserEntity>().eq("username",userName));
     }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        if (Objects.isNull(username))
+            return true;
+        UserEntity userEntity = baseMapper.selectOne(new QueryWrapper<UserEntity>().eq("username", username));
+        return Objects.nonNull(userEntity);
+    }
+
+    @Override
+    public void saveUser(String username, String encodedPassword) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(username);
+        userEntity.setPassword(encodedPassword);
+        baseMapper.insert(userEntity);
+    }
 }

@@ -38,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. 处理跨域预检请求（OPTIONS）
         if (path.startsWith("/auth/login") ||
                 path.startsWith("/auth/register") ||
+                path.startsWith("/rsa/publicKey") ||
                 "OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return; // 直接返回，不继续执行过滤器链
